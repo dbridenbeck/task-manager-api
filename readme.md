@@ -16,10 +16,27 @@ An API that allows users to manage their tasks. API supports CRUD actions on tas
 - adds new user to database
 - sends welcome email to user
 - generates Auth Token for user
+- Passwords must be longer than 7 characters and not contain the word "password"
+
+Expected request body:
+```
+{
+	"name": "any name",
+	"email": "email@gmail.com",
+	"password": "MustBeLongerThan7Characters"
+}
+```
 
 ##### POST /users/login
-- expects "email" and "password" in body
 - if email and password match a user in the db, log user in and create auth token
+
+Expected request body:
+```
+{
+	"email": "UserEmail@gmail.com",
+	"password": "UserPassword"
+}
+```
 
 ##### POST /users/logout
 - remove current auth token from user
@@ -32,13 +49,26 @@ An API that allows users to manage their tasks. API supports CRUD actions on tas
 
 ##### PATCH /users/me
 - allow updates to name, email, password, and age fields
+- Age must be a positive number
+- Passwords must be longer than 7 characters and not contain the word "password"
+
+Request body can contain any of the following:
+```
+{
+	"name": "any user name",
+  "email": "UserEmail@gmail.com",
+	"password": "UserPassword",
+  "age": MustBePositiveNumber,
+}
+```
 
 ##### DELETE /users/me
-- remove user from DB and send email to user
+- remove user from DB and send email notification to user
 
 ##### POST /users/me/avatar
 - use multer and sharp to save image to DB
-- images must be .jpg, .jpeg, or .png
+- Request should be made using form-data and files ending in .jpg, .jpeg, or .png
+
 
 ##### DELETE /users/me/avatar
 - Remove avatar from user in DB
@@ -50,20 +80,37 @@ An API that allows users to manage their tasks. API supports CRUD actions on tas
 
 ##### POST /tasks
 - create a task in database with the user._id as the owner
+- Completed field is optional in request, default is false
+
+Expected Request Body:
+```
+{
+	"description": "store in prod db",
+	"completed": boolean
+}
+```
 
 ##### **Note that for any GET/PATCH/DELETE actions user must be owner of the task!**
 
 ##### GET /tasks
 Supports getting tasks by querying:
 - Completed: true or false (e.g. /tasks?completed=true)
-- sortBy: any field on task (description, completed, createdAt, updatedAt) by asc or desc (e.g. /tasks?sortBy=createdAt:asc)  
+- sortBy: any field on task (description, completed, createdAt, updatedAt) by asc or desc (e.g. /tasks?sortBy=createdAt:asc)
+  
 
 ##### GET /tasks/:id
-- return task by :id
+- return task by id
 
 ### PATCH /tasks/:id
 - updates a task which a user owns
-- body of request should contain "description" and/or "completed"
+
+Request body can have any of the following set:
+```
+{
+	"completed": false,
+	"description": "any text you want"
+}
+```
 
 ### DELETE /tasks/:id
 - deletes task that a user owns
